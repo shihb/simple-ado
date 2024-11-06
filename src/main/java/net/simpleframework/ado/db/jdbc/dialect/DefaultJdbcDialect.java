@@ -22,6 +22,7 @@ import net.simpleframework.ado.EOrder;
 import net.simpleframework.ado.db.DbTableColumn;
 import net.simpleframework.ado.db.JSqlParser;
 import net.simpleframework.ado.db.common.ParamVal;
+import net.simpleframework.ado.db.common.SqlInjectionUtils;
 import net.simpleframework.common.ClassUtils;
 import net.simpleframework.common.Convert;
 import net.simpleframework.common.FileUtils;
@@ -80,6 +81,9 @@ public class DefaultJdbcDialect extends ObjectEx implements IJdbcDialect {
 			int i = 0;
 			for (final DbTableColumn dbColumn : columns) {
 				if (dbColumn.getOrder() == EOrder.normal) {
+					continue;
+				}
+				if(SqlInjectionUtils.check(dbColumn.toString())){//shihb 存在sql注入跳过
 					continue;
 				}
 				if (i++ > 0) {

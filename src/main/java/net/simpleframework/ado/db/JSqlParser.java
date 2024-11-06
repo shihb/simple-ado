@@ -27,6 +27,7 @@ import com.alibaba.druid.sql.ast.statement.SQLUnionQuery;
 import com.alibaba.druid.sql.parser.SQLParserUtils;
 
 import net.simpleframework.ado.EOrder;
+import net.simpleframework.ado.db.common.SqlInjectionUtils;
 import net.simpleframework.ado.db.jdbc.DatabaseMeta;
 import net.simpleframework.ado.db.jdbc.JdbcUtils;
 import net.simpleframework.common.BeanUtils;
@@ -121,6 +122,9 @@ public abstract class JSqlParser {
 		final List<SQLSelectOrderByItem> items = orderBy.getItems();
 		for (int i = columns.length - 1; i >= 0; i--) {
 			final DbTableColumn dbColumn = columns[i];
+			if(SqlInjectionUtils.check(dbColumn.toString())){//shihb 存在sql注入跳过
+				continue;
+			}
 			final SQLExpr expr = new SQLIdentifierExpr(dbColumn.getAlias());
 			SQLExpr expr2 = expr;
 			final DbEntityTable dbTable = dbColumn.getTable();
